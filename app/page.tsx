@@ -271,6 +271,8 @@ export default function Home() {
     setIsHost(false);
     setHostRole(null);
     setAdminImpersonatingRole(null);
+    setCurrentScreen('landing');
+    setShowSettings(false);
     localStorage.removeItem(USER_ROLE_KEY);
     localStorage.removeItem(USER_NAME_KEY);
     localStorage.removeItem(IS_ADMIN_KEY);
