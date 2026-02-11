@@ -237,93 +237,120 @@ export function CelebrationScreen({
         </div>
       </div>
 
-      {/* PRINT VERSION - Completely separate layout optimized for A4 */}
-      <div className="hidden print:block print:w-full print:min-h-0 print:p-0 print:m-0">
-        <div className="w-full p-4">
-          {/* Header Row: Logo + Title + Seal */}
-          <div className="flex items-center justify-between mb-3 pb-2 border-b-2 border-slate-300">
-            {/* Logo */}
-            <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-blue-200 flex-shrink-0">
+      {/* PRINT VERSION - Optimized for A4, similar layout to screen */}
+      <div className="hidden print:block print:w-full print:p-6">
+        <div className="text-center">
+          {/* SMA Logo */}
+          <div className="flex justify-center mb-4">
+            <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-blue-200 shadow">
               <img src="/SMA Logo.png" alt="SMA Logo" className="w-full h-full object-cover" />
-            </div>
-
-            {/* Title */}
-            <div className="text-center flex-1 px-4">
-              <h1 className="text-xl font-bold text-slate-900 mb-0">Congratulations!</h1>
-              <h2 className="text-base text-slate-700">Incoming SMA Committee 2026</h2>
-            </div>
-
-            {/* Seal */}
-            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-slate-700 to-slate-900 flex items-center justify-center flex-shrink-0">
-              <Check className="w-6 h-6 text-white" strokeWidth={3} />
             </div>
           </div>
 
+          {/* Digital Seal with Corner Brackets */}
+          <div className="flex justify-center mb-4">
+            <div className="relative" style={{ width: '120px', height: '120px' }}>
+              {/* Corner Brackets */}
+              <div className="absolute top-0 left-0 w-4 h-4 border-l-2 border-t-2 border-slate-400" />
+              <div className="absolute top-0 right-0 w-4 h-4 border-r-2 border-t-2 border-slate-400" />
+              <div className="absolute bottom-0 left-0 w-4 h-4 border-l-2 border-b-2 border-slate-400" />
+              <div className="absolute bottom-0 right-0 w-4 h-4 border-r-2 border-b-2 border-slate-400" />
+
+              {/* SVG Ring */}
+              <svg className="absolute inset-0" width="120" height="120">
+                <circle cx="60" cy="60" r="50" fill="none" stroke="#e2e8f0" strokeWidth="6" />
+                <circle cx="60" cy="60" r="50" fill="none" stroke="#1d4ed8" strokeWidth="6" strokeLinecap="round" />
+              </svg>
+
+              {/* Center Content */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div
+                  className="w-16 h-16 rounded-full flex flex-col items-center justify-center"
+                  style={{ background: 'linear-gradient(135deg, #1e293b 0%, #475569 100%)' }}
+                >
+                  <Check className="w-6 h-6 text-white" strokeWidth={3} />
+                  <span className="text-white text-[8px] font-semibold mt-0.5">SMA Committee</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Title */}
+          <h1 className="text-2xl font-bold text-slate-900 mb-1">Congratulations!</h1>
+          <h2 className="text-lg text-slate-700 mb-2">Incoming SMA Committee 2026</h2>
+
           {/* Description */}
-          <p className="text-xs text-slate-600 text-center mb-3 leading-snug">
+          <p className="text-[11px] text-slate-600 mb-4 max-w-lg mx-auto leading-relaxed">
             The handover ceremony has been completed successfully. We look forward to your leadership in guiding the Sunway Maldivian Association to new heights of excellence throughout 2026.
           </p>
 
           {/* Official Appointment Badge */}
-          <div className="text-center mb-3">
-            <div className="inline-block px-6 py-2 bg-gradient-to-br from-blue-600 via-blue-700 to-purple-700 text-white rounded-lg">
-              <div className="text-[10px] uppercase tracking-wider opacity-90">Official Appointment</div>
-              <div className="text-lg font-bold">SMA Committee Term 2026</div>
+          <div className="mb-4">
+            <div
+              className="inline-block px-8 py-3 text-white rounded-xl"
+              style={{ background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #7e22ce 100%)' }}
+            >
+              <div className="text-[10px] uppercase tracking-wider opacity-90 mb-1">Official Appointment</div>
+              <div className="text-xl font-bold mb-1">SMA Committee Term 2026</div>
               <div className="text-[10px] opacity-90">Formally Recognised • February 11, 2026</div>
             </div>
           </div>
 
-          {/* Ceremony Acknowledgments - Horizontal */}
-          <div className="mb-3">
-            <h3 className="text-xs font-semibold text-slate-900 mb-2 text-center">Ceremony Acknowledgments</h3>
-            <div className="grid grid-cols-4 gap-2">
+          {/* Ceremony Acknowledgments */}
+          <div className="mb-4 text-left max-w-2xl mx-auto">
+            <h3 className="text-sm font-semibold text-slate-900 mb-2 text-center">Ceremony Acknowledgments</h3>
+            <div className="grid grid-cols-2 gap-2">
               {[
-                { num: 1, title: 'Governance', by: 'Ms. Justin' },
-                { num: 2, title: 'Validation', by: 'Ms. Shazrina' },
-                { num: 3, title: 'Handover', by: 'Hasin' },
-                { num: 4, title: 'Acceptance', by: 'Umar' },
+                { num: 1, title: 'Governance Acknowledgement', by: 'Ms. Justin', role: 'Club Advisor' },
+                { num: 2, title: 'Validation & Compliance', by: 'Ms. Shazrina', role: 'Student Life' },
+                { num: 3, title: 'Formal Handover', by: 'Hasin', role: 'Outgoing VP' },
+                { num: 4, title: 'Appointment Acceptance', by: 'Umar', role: 'Incoming President' },
               ].map((item) => (
-                <div key={item.num} className="text-center p-2 border border-slate-300 rounded">
-                  <div className="w-5 h-5 bg-slate-800 text-white rounded-full flex items-center justify-center text-[10px] font-semibold mx-auto mb-1">
+                <div key={item.num} className="flex items-start gap-2 p-2 border border-slate-300 rounded">
+                  <div className="w-5 h-5 bg-slate-800 text-white rounded-full flex items-center justify-center text-[10px] font-semibold flex-shrink-0">
                     {item.num}
                   </div>
-                  <div className="text-[10px] font-semibold text-slate-900">{item.title}</div>
-                  <div className="text-[9px] text-slate-600">{item.by}</div>
+                  <div>
+                    <div className="text-[11px] font-semibold text-slate-900">{item.title}</div>
+                    <div className="text-[10px] text-slate-600">by {item.by} ({item.role})</div>
+                  </div>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Group Photo - Full width, natural aspect ratio */}
-          <div className="mb-3">
-            <h3 className="text-xs font-semibold text-slate-900 mb-1 text-center">2026 SMA Committee</h3>
-            <div className="w-full border border-slate-300 rounded overflow-hidden">
+          {/* Group Photo - Full width, showing complete image */}
+          <div className="mb-4 max-w-2xl mx-auto">
+            <h3 className="text-sm font-semibold text-slate-900 mb-2 text-center">2026 SMA Committee</h3>
+            <div className="w-full border-2 border-slate-300 rounded-lg overflow-hidden">
               <img
                 src="/new_committee.JPEG"
                 alt="2026 SMA Committee Team Photo"
-                className="w-full h-auto block"
-                style={{ maxHeight: '180px', objectFit: 'cover', objectPosition: 'center top' }}
+                className="w-full"
+                style={{ height: 'auto', maxHeight: '160px', objectFit: 'cover', objectPosition: 'center 20%' }}
               />
             </div>
           </div>
 
           {/* Signatures */}
-          <div className="grid grid-cols-4 gap-2 mb-2 p-2 border border-slate-300 rounded">
-            {[
-              { name: 'Ms. Justin', role: 'Club Advisor' },
-              { name: 'Ms. Shazrina', role: 'Student Life' },
-              { name: 'Hasin', role: 'Outgoing VP' },
-              { name: 'Umar', role: 'Incoming President' },
-            ].map((person) => (
-              <div key={person.name} className="text-center border-b border-slate-300 pb-1">
-                <div className="text-[10px] font-semibold text-slate-900">{person.name}</div>
-                <div className="text-[8px] text-slate-600">{person.role}</div>
-              </div>
-            ))}
+          <div className="max-w-2xl mx-auto mb-3 p-3 border border-slate-300 rounded-lg">
+            <div className="flex justify-between gap-3 text-center">
+              {[
+                { name: 'Ms. Justin', role: 'Club Advisor' },
+                { name: 'Ms. Shazrina', role: 'Student Life' },
+                { name: 'Hasin', role: 'Outgoing VP' },
+                { name: 'Umar', role: 'Incoming President' },
+              ].map((person) => (
+                <div key={person.name} className="flex-1 border-b border-slate-300 pb-1">
+                  <div className="text-[11px] font-semibold text-slate-900">{person.name}</div>
+                  <div className="text-[9px] text-slate-600">{person.role}</div>
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* Footer */}
-          <div className="text-center text-[9px] text-slate-500">
+          <div className="text-center text-[10px] text-slate-500">
             Sunway Maldivian Association • Established 2020 • Sunway University
           </div>
         </div>
