@@ -32,6 +32,8 @@ export default function Home() {
   // Admin state
   const [isAdmin, setIsAdmin] = useState(false);
   const [adminImpersonatingRole, setAdminImpersonatingRole] = useState<string | null>(null);
+  const [isHost, setIsHost] = useState(false);
+  const [hostRole, setHostRole] = useState<string | null>(null);
 
   // UI state
   const [reduceMotion, setReduceMotion] = useState(false);
@@ -198,8 +200,10 @@ export default function Home() {
   const handleConfirmStep = async (stepId: number) => {
     try {
       setError(null);
-      // If admin is impersonating, use that role
-      const roleToUse = isAdmin && adminImpersonatingRole ? adminImpersonatingRole : currentUserRole;
+      // Check if user is admin or has host control
+      const hasHostControl = isAdmin || (currentUserRole === hostRole && hostRole !== null);
+      // If admin/host is impersonating, use that role
+      const roleToUse = hasHostControl && adminImpersonatingRole ? adminImpersonatingRole : currentUserRole;
 
       // Find the code for the role
       let participantCode = '';
@@ -259,10 +263,29 @@ export default function Home() {
     }
   };
 
+  // Handle logout (available for all users)
+  const handleLogout = () => {
+    setCurrentUserRole(null);
+    setCurrentUserName(null);
+    setIsAdmin(false);
+    setIsHost(false);
+    setHostRole(null);
+    setAdminImpersonatingRole(null);
+    localStorage.removeItem(USER_ROLE_KEY);
+    localStorage.removeItem(USER_NAME_KEY);
+    localStorage.removeItem(IS_ADMIN_KEY);
+  };
+
   // Handle reset (admin only)
   const handleReset = async () => {
     if (!isAdmin) return;
     await handleBackToHome();
+  };
+
+  // Handle granting host control (admin only)
+  const handleGrantHost = (role: string) => {
+    if (!isAdmin) return;
+    setHostRole(role);
   };
 
   // Check if can start ceremony
@@ -309,10 +332,13 @@ export default function Home() {
             <span className="text-sm text-slate-600">Reduce motion</span>
           </label>
 
-          {isAdmin && (
+          {/* Host Controls - for admin or designated host */}
+          {(isAdmin || (currentUserRole === hostRole && hostRole !== null)) && (
             <>
               <div className="border-t border-slate-200 pt-3 mt-3">
-                <h3 className="text-sm font-semibold text-slate-900 mb-3">Admin Controls</h3>
+                <h3 className="text-sm font-semibold text-slate-900 mb-3">
+                  {isAdmin ? 'Admin Controls' : 'Host Controls'}
+                </h3>
 
                 {/* Role Impersonation */}
                 <div className="mb-3">
@@ -344,25 +370,74 @@ export default function Home() {
                   )}
                 </div>
 
-                <button
-                  onClick={handleReset}
-                  className="w-full px-3 py-2 text-sm bg-red-50 text-red-700 rounded hover:bg-red-100 transition-colors"
-                >
-                  Reset Ceremony
-                </button>
+                {/* Grant Host Control - Admin only */}
+                {isAdmin && (
+                  <div className="mb-3">
+                    <label className="block text-xs text-slate-600 mb-2">
+                      Grant Host Control To
+                    </label>
+                    <select
+                      value={hostRole || ''}
+                      onChange={(e) => handleGrantHost(e.target.value)}
+                      className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400"
+                    >
+                      <option value="">None (Admin only)</option>
+                      <option value="advisor">Club Advisor</option>
+                      <option value="studentlife">Student Life Rep</option>
+                      <option value="outgoing">Outgoing Rep</option>
+                      <option value="incoming">Incoming Rep</option>
+                    </select>
+                    {hostRole && (
+                      <p className="text-xs text-green-600 mt-2">
+                        Host control granted to:{' '}
+                        {hostRole === 'advisor'
+                          ? 'Club Advisor'
+                          : hostRole === 'studentlife'
+                          ? 'Student Life Rep'
+                          : hostRole === 'outgoing'
+                          ? 'Outgoing Rep'
+                          : 'Incoming Rep'}
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                {/* Reset Ceremony - Admin only */}
+                {isAdmin && (
+                  <button
+                    onClick={handleReset}
+                    className="w-full px-3 py-2 text-sm bg-red-50 text-red-700 rounded hover:bg-red-100 transition-colors"
+                  >
+                    Reset Ceremony
+                  </button>
+                )}
               </div>
             </>
           )}
 
+          {/* User Info & Logout */}
           <div className="border-t border-slate-200 pt-3 mt-3">
-            <div className="text-xs text-slate-500">
+            <div className="text-xs text-slate-500 mb-3">
               {currentUserName && (
                 <div>
                   Logged in as: <span className="text-slate-700">{currentUserName}</span>
                 </div>
               )}
               {isAdmin && <div className="text-blue-600 mt-1">Admin Access Enabled</div>}
+              {!isAdmin && currentUserRole === hostRole && hostRole && (
+                <div className="text-green-600 mt-1">Host Control Enabled</div>
+              )}
             </div>
+
+            {/* Logout Button for all logged-in users */}
+            {currentUserRole && (
+              <button
+                onClick={handleLogout}
+                className="w-full px-3 py-2 text-sm bg-slate-100 text-slate-700 rounded hover:bg-slate-200 transition-colors"
+              >
+                Logout
+              </button>
+            )}
           </div>
         </div>
       )}
@@ -396,7 +471,11 @@ export default function Home() {
           currentStep={currentStep}
           steps={ceremonySteps}
           onConfirmStep={handleConfirmStep}
-          currentUserRole={isAdmin && adminImpersonatingRole ? adminImpersonatingRole : currentUserRole}
+          currentUserRole={
+            (isAdmin || (currentUserRole === hostRole && hostRole !== null)) && adminImpersonatingRole
+              ? adminImpersonatingRole
+              : currentUserRole
+          }
           reduceMotion={reduceMotion}
         />
       )}

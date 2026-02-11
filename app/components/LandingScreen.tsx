@@ -18,10 +18,10 @@ interface LandingScreenProps {
 }
 
 const ROLE_OPTIONS = [
-  { role: 'advisor', label: 'Club Advisor (Ms. Justin)', code: 'ADV2026' },
-  { role: 'studentlife', label: 'Student Life (Ms. Shazrina)', code: 'SL2026' },
-  { role: 'outgoing', label: 'Outgoing Representative', code: 'OUT2026' },
-  { role: 'incoming', label: 'Incoming Representative', code: 'INC2026' },
+  { role: 'advisor', label: 'Club Advisor (Ms. Justin)', code: 'JUSTIN26' },
+  { role: 'studentlife', label: 'Student Life (Ms. Shazrina)', code: 'SHAZRINA26' },
+  { role: 'outgoing', label: 'Outgoing Representative', code: 'HASIN26' },
+  { role: 'incoming', label: 'Incoming Representative', code: 'UMAR26' },
 ];
 
 export function LandingScreen({
@@ -61,7 +61,7 @@ export function LandingScreen({
   };
 
   const handleAdminProceed = () => {
-    if (adminCode === 'ADMIN2026') {
+    if (adminCode === 'MASTER26') {
       onAdminProceed(adminCode);
       setShowAdminModal(false);
       setAdminCode('');

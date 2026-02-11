@@ -25,11 +25,11 @@ export interface CeremonyState {
 }
 
 export const PARTICIPANT_ROLES: Record<string, { name: string; role: string; label: string; isAdmin?: boolean }> = {
-  ADV2026: { name: "Ms. Justin", role: "advisor", label: "Club Advisor" },
-  SL2026: { name: "Ms. Shazrina", role: "studentlife", label: "Student Life Representative" },
-  OUT2026: { name: "Hasin", role: "outgoing", label: "Outgoing Vice President" },
-  INC2026: { name: "Umar", role: "incoming", label: "Incoming President" },
-  ADMIN2026: { name: "Admin", role: "admin", label: "Super User", isAdmin: true }
+  JUSTIN26: { name: "Ms. Justin", role: "advisor", label: "Club Advisor" },
+  SHAZRINA26: { name: "Ms. Shazrina", role: "studentlife", label: "Student Life Representative" },
+  HASIN26: { name: "Hasin", role: "outgoing", label: "Outgoing Vice President" },
+  UMAR26: { name: "Umar", role: "incoming", label: "Incoming President" },
+  MASTER26: { name: "Administrator", role: "admin", label: "Ceremony Host", isAdmin: true }
 };
 
 export const CEREMONY_STEPS: Omit<CeremonyStep, 'completed' | 'completedBy' | 'completedAt'>[] = [
