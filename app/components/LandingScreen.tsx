@@ -33,26 +33,10 @@ export function LandingScreen({
   onAdminProceed,
   waitingFor,
 }: LandingScreenProps) {
-  const [selectedRole, setSelectedRole] = useState<string>('');
   const [accessCode, setAccessCode] = useState<string>('');
-  const [showCodeInput, setShowCodeInput] = useState<boolean>(false);
   const [showAdminModal, setShowAdminModal] = useState<boolean>(false);
   const [adminCode, setAdminCode] = useState<string>('');
   const [adminError, setAdminError] = useState<string>('');
-
-  const handleRoleSelect = (role: string) => {
-    setSelectedRole(role);
-    setShowCodeInput(true);
-  };
-
-  const handleJoin = () => {
-    if (selectedRole && accessCode) {
-      onJoinRole(selectedRole, accessCode);
-      setAccessCode('');
-      setShowCodeInput(false);
-      setSelectedRole('');
-    }
-  };
 
   const handleProceedAnywayClick = () => {
     setShowAdminModal(true);
@@ -119,44 +103,41 @@ export function LandingScreen({
             <CardHeader>
               <CardTitle>Join Ceremony</CardTitle>
               <CardDescription>
-                Select your role and enter your access code to join
+                {currentUserRole
+                  ? 'You have successfully joined the ceremony'
+                  : 'Enter your access code to join'}
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {!showCodeInput ? (
-                <div className="space-y-3">
-                  {ROLE_OPTIONS.map((option) => {
-                    const participant = getParticipantByRole(option.role);
-                    const isJoined = !!participant;
-
-                    return (
-                      <button
-                        key={option.role}
-                        onClick={() => handleRoleSelect(option.role)}
-                        disabled={isJoined}
-                        className="w-full flex items-center justify-between p-4 rounded-lg border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-left"
-                      >
-                        <span className="text-slate-900">{option.label}</span>
-                        {isJoined && (
-                          <span className="text-xs text-emerald-600 bg-emerald-50 px-2 py-1 rounded">
-                            Joined
-                          </span>
-                        )}
-                      </button>
-                    );
-                  })}
+              {/* User has already joined - show their status */}
+              {currentUserRole && currentUserRole !== 'admin' ? (
+                <div className="text-center py-6">
+                  <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-semibold text-slate-900 mb-2">You're In!</h3>
+                  <p className="text-slate-600 mb-1">
+                    Joined as: <span className="font-medium">{ROLE_OPTIONS.find(r => r.role === currentUserRole)?.label || currentUserRole}</span>
+                  </p>
+                  <p className="text-sm text-slate-500">
+                    Waiting for other participants to join...
+                  </p>
+                </div>
+              ) : currentUserRole === 'admin' ? (
+                <div className="text-center py-6">
+                  <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Shield className="w-8 h-8 text-blue-600" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-slate-900 mb-2">Admin Mode</h3>
+                  <p className="text-slate-600">
+                    You have full control over the ceremony
+                  </p>
                 </div>
               ) : (
+                /* Not joined yet - show code entry */
                 <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm text-slate-600 mb-2">
-                      Selected Role
-                    </label>
-                    <div className="p-3 bg-slate-100 rounded-lg text-slate-900">
-                      {ROLE_OPTIONS.find((r) => r.role === selectedRole)?.label}
-                    </div>
-                  </div>
-
                   <div>
                     <label className="block text-sm text-slate-600 mb-2">
                       Access Code
@@ -165,32 +146,22 @@ export function LandingScreen({
                       type="text"
                       value={accessCode}
                       onChange={(e) => setAccessCode(e.target.value.toUpperCase())}
-                      placeholder="Enter access code"
-                      className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400"
-                      onKeyDown={(e) => e.key === 'Enter' && handleJoin()}
+                      placeholder="Enter your access code"
+                      className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 text-center text-lg tracking-wider"
+                      onKeyDown={(e) => e.key === 'Enter' && accessCode && onJoinRole('', accessCode)}
                     />
                   </div>
-
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        setShowCodeInput(false);
-                        setAccessCode('');
-                        setSelectedRole('');
-                      }}
-                      className="flex-1"
-                    >
-                      Cancel
-                    </Button>
-                    <Button onClick={handleJoin} disabled={!accessCode} className="flex-1">
-                      Join
-                    </Button>
-                  </div>
-
-                  <div className="text-xs text-slate-500 text-center">
-                    Or use your secure link to join automatically
-                  </div>
+                  <Button
+                    onClick={() => onJoinRole('', accessCode)}
+                    disabled={!accessCode}
+                    className="w-full"
+                    size="lg"
+                  >
+                    Join Ceremony
+                  </Button>
+                  <p className="text-xs text-slate-500 text-center">
+                    Enter the access code you received to join
+                  </p>
                 </div>
               )}
             </CardContent>
@@ -206,26 +177,54 @@ export function LandingScreen({
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {visibleParticipants.map((participant) => (
-                  <div
-                    key={participant.id}
-                    className="flex items-center gap-4 p-3 rounded-lg border border-slate-200"
-                  >
-                    <div className="w-10 h-10 bg-gradient-to-br from-slate-200 to-slate-300 rounded-full flex items-center justify-center text-slate-600 flex-shrink-0">
-                      {participant.name ? participant.name.charAt(0) : '?'}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-slate-900 truncate">
-                        {participant.name || 'Waiting...'}
+                {visibleParticipants.map((participant) => {
+                  const isCurrentUser = currentUserRole === participant.role;
+                  const hasJoined = participant.status === 'joined';
+
+                  return (
+                    <div
+                      key={participant.id}
+                      className={`flex items-center gap-4 p-3 rounded-lg border-2 transition-all ${
+                        isCurrentUser
+                          ? 'border-emerald-400 bg-emerald-50'
+                          : hasJoined
+                          ? 'border-slate-300 bg-slate-50'
+                          : 'border-slate-200 bg-white'
+                      }`}
+                    >
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
+                        hasJoined
+                          ? 'bg-emerald-500 text-white'
+                          : 'bg-slate-200 text-slate-400'
+                      }`}>
+                        {hasJoined ? (
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                        ) : (
+                          <span className="text-lg">?</span>
+                        )}
                       </div>
-                      <div className="text-xs text-slate-500">{participant.roleLabel}</div>
+                      <div className="flex-1 min-w-0">
+                        <div className={`truncate ${hasJoined ? 'text-slate-900 font-medium' : 'text-slate-400'}`}>
+                          {hasJoined ? participant.name : 'Waiting to join...'}
+                        </div>
+                        <div className="text-xs text-slate-500">{participant.roleLabel}</div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {isCurrentUser && (
+                          <span className="text-xs text-emerald-600 bg-emerald-100 px-2 py-1 rounded font-medium">
+                            You
+                          </span>
+                        )}
+                        <StatusChip
+                          status={hasJoined ? 'joined' : 'waiting'}
+                          size="sm"
+                        />
+                      </div>
                     </div>
-                    <StatusChip
-                      status={participant.status === 'joined' ? 'joined' : 'waiting'}
-                      size="sm"
-                    />
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </CardContent>
           </Card>

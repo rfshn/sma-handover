@@ -122,8 +122,8 @@ export default function Home() {
     return () => clearInterval(pollInterval);
   }, [fetchParticipants, fetchCeremonyProgress]);
 
-  // Handle role join
-  const handleJoinRole = async (role: string, accessCode: string) => {
+  // Handle role join (role is determined by the access code)
+  const handleJoinRole = async (_role: string, accessCode: string) => {
     try {
       setError(null);
       const response = await fetch('/api/participants', {
