@@ -320,13 +320,13 @@ export function CelebrationScreen({
           </div>
 
           {/* Group Photo - Sized to fit on one page */}
-          <div className="mb-4 mx-auto" style={{ maxWidth: '80%' }}>
+          <div className="mb-4 mx-auto" style={{ maxWidth: '100%' }}>
             <h3 className="text-sm font-semibold text-slate-900 mb-2 text-center">2026 SMA Committee</h3>
-            <div className="w-full border-2 border-slate-300 rounded-lg overflow-hidden">
+            <div className="w-full border-2 border-slate-300 rounded-lg overflow-hidden" style={{ height: '290px' }}>
               <img
                 src="/new_committee.JPEG"
                 alt="2026 SMA Committee Team Photo"
-                className="w-full h-auto object-contain"
+                className="w-full h-full object-cover object-center"
               />
             </div>
           </div>
