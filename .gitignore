@@ -36,6 +36,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# figma handover files
+fighandover/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
