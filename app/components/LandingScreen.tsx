@@ -109,7 +109,7 @@ export function LandingScreen({
           </h1>
           <div className="flex items-center justify-center gap-2 text-slate-600">
             <Clock className="w-4 h-4" />
-            <span>February 10, 2026 • 3:00 PM GMT+8</span>
+            <span>February 11, 2026 • 5:00 PM</span>
           </div>
         </div>
 

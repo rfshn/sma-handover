@@ -114,7 +114,7 @@ export function CelebrationScreen({
                   Official Appointment
                 </div>
                 <div className="text-3xl print:text-xl font-bold mb-2 print:mb-1">SMA Committee Term 2026</div>
-                <div className="text-sm print:text-xs opacity-90">Formally Recognised • February 10, 2026</div>
+                <div className="text-sm print:text-xs opacity-90">Formally Recognised • February 11, 2026</div>
               </motion.div>
 
               {/* Ceremony Steps Acknowledgment */}
